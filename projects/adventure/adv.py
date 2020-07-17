@@ -63,6 +63,17 @@ def rebuildDictionaryForRoomWithNewDirection(direction):
     rooms[oldRoomValue][direction] = player.current_room.id
     rooms[player.current_room.id][calculateOpposite(direction)] = oldRoomValue
 
+def roomsFilled():
+    # if rooms[player.current_room.id]['n'] is not '?' and rooms[player.current_room.id]['s'] is not '?' and rooms[player.current_room.id]['e'] is not '?' and rooms[player.current_room.id]['w']:
+    #     return True
+    validDirection = player.current_room.get_exists()
+
+    for each in validDirection:
+        if rooms[player.current_room.id][each] is '?':
+            return False
+
+    return True
+    
 def setNewRoom():
 
     # Get room player is currently in
@@ -95,6 +106,11 @@ while len(rooms) < 7:
     
     # Do magical thing loading from previous info
 
+    # If there are no more '?' in directions then go back the way we came
+    while roomsFilled():
+        # move back to where I came from 
+        player.travel(lastDirection)
+
     # What directions are avaiable from current room using room.get_exits()
     directions = player.current_room.get_exits()
 
@@ -103,6 +119,9 @@ while len(rooms) < 7:
 
     # while randomDirection == calculateOpposite(lastDirection):
     #     randomDirection = random.choice(directions)
+
+    # Save old room
+    oldRoomValue = player.current_room.id
 
     # Move into random direction if the direction has not already been explored
     player.travel(randomDirection)
